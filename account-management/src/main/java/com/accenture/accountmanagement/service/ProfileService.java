@@ -38,6 +38,26 @@ public class ProfileService {
         return saved;
     }
 
+    public Profile updateProfile(Long id, Profile updatedProfile) {
+        Profile existing = getProfileById(id);
+        logger.info("Updating Profile: {}", id);
+        existing.setFirstName(updatedProfile.getFirstName());
+        existing.setMiddleName(updatedProfile.getMiddleName());
+        existing.setLastName(updatedProfile.getLastName());
+        existing.setDateOfBirth(updatedProfile.getDateOfBirth());
+        existing.setEmail(updatedProfile.getEmail());
+        existing.setPhoneNumber(updatedProfile.getPhoneNumber());
+        Profile saved = profileRepository.save(existing);
+        logger.info("Updated Profile: {}", id);
+
+        return saved;
+    }
+
+    public void deleteProfile(Long id) {
+        logger.info("Deleting profile: {}", id);
+        profileRepository.deleteById(id);
+    }
+
     public Account createAccountForProfile(Long profileId, Account account) {
         Profile profile = profileRepository.findById(profileId).orElseThrow(() -> {
             logger.warn("Profile id not found: {}", profileId);
