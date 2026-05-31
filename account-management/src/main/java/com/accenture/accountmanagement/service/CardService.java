@@ -1,11 +1,13 @@
 package com.accenture.accountmanagement.service;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.accenture.accountmanagement.enums.CardType;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.repository.CardRepository;
 
@@ -13,6 +15,7 @@ import com.accenture.accountmanagement.repository.CardRepository;
 public class CardService {
     private final Logger logger = LoggerFactory.getLogger(CardService.class);
     private final CardRepository cardRepository;
+    private final SecureRandom random = new SecureRandom();
 
     public CardService(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
@@ -33,6 +36,7 @@ public class CardService {
 
     public Card createCard(Card card) {
         logger.info("Creating card: {}", card);
+        card.setCardNumber(generateValidCardNumber(card.getCardType()));
         return cardRepository.save(card);
     }
 
@@ -48,5 +52,42 @@ public class CardService {
     public void deleteCard(Long id) {
         logger.info("Delete card: {}", id);
         cardRepository.deleteById(id);
+    }
+
+    public String generateValidCardNumber(CardType cardType) {
+        String prefix = switch (cardType) {
+            case DEBIT -> "4";
+            case CREDIT -> "5";
+        };
+        String number;
+        boolean exists;
+        do {
+            StringBuilder sb = new StringBuilder(prefix);
+            for (int i = 0; i < 14; i++) {
+                sb.append(random.nextInt(10));
+            }
+            int checkDigit = computeLuhnCheckDigit(sb.toString());
+            sb.append(checkDigit);
+            number = sb.toString();
+            exists = cardRepository.existsByCardNumber(number);
+        } while (exists);
+        return number;
+    }
+
+    private int computeLuhnCheckDigit(String digits) {
+        int sum = 0;
+        boolean alternate = true;
+        for (int i = digits.length() - 1; i >= 0; i--) {
+            int n = digits.charAt(i) - '0';
+            if (alternate) {
+                n *= 2;
+                if (n > 9) {
+                    n -= 9;
+                }
+            }
+            sum += n;
+            alternate = !alternate;
+        }
+        return (sum * 9) % 10;
     }
 }
