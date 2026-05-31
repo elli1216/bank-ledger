@@ -29,7 +29,7 @@ public class CardController {
     }
 
     @GetMapping("/{id}")
-    public Card getCardById(Long id) {
+    public Card getCardById(@PathVariable Long id) {
         return cardService.getCardById(id);
     }
 
@@ -39,8 +39,8 @@ public class CardController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCard(Long id) {
-        deleteCard(id);
+    public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
+        cardService.deleteCard(id);
         return ResponseEntity.noContent().build();
     }
 }
