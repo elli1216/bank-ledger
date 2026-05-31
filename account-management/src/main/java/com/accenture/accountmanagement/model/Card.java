@@ -16,6 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -27,7 +29,6 @@ public class Card {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 16)
-    @NotNull
     @Size(min = 16, max = 16, message = "Card number length is invalid, must be 16 numbers.")
     private String cardNumber;
 
@@ -52,6 +53,7 @@ public class Card {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonIgnoreProperties("cards")
     private Account account;
 
     public Card() {

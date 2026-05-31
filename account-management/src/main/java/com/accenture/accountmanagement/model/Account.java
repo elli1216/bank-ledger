@@ -66,6 +66,7 @@ public class Account {
     private Profile profile;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("account")
     private List<Card> cards = new ArrayList<>();
 
     @PrePersist
