@@ -26,19 +26,23 @@ Profile (1) ──→ Account (many) ──→ Card (many)
 | Entity  | Table      | Key fields                                                                 |
 |---------|------------|----------------------------------------------------------------------------|
 | Profile | `profiles` | firstName, middleName?, lastName, email, phoneNumber, dateOfBirth          |
-| Account | `accounts` | accountNumber, customerId, accountType (CHECKING/SAVINGS), balance, accountStatus (ACTIVE/DORMANT/FROZEN/CLOSED), currency |
+| Account | `accounts` | accountNumber, accountType (CHECKING/SAVINGS), balance, accountStatus (ACTIVE/DORMANT/FROZEN/CLOSED), currency |
 | Card    | `cards`    | cardNumber (16 chars), cvv, expiryDate, cardType (DEBIT/CREDIT), cardStatus (ACTIVE/EXPIRED/BLOCKED), pin? |
 
 Card has no `@PrePersist` timestamp — unlike Profile/Account which set `createdAt` via `@PrePersist`.
 
 ### REST API
 
-| Endpoint             | Controller         | Status       |
-|----------------------|--------------------|--------------|
-| `GET /api/accounts`  | `AccountController`| Implemented  |
-| `GET /api/accounts/{id}` | AccountController | Implemented  |
-| `POST /api/accounts` | AccountController  | Implemented  |
-| `GET/POST /api/profiles` | ProfileController | **Stub** — no endpoints yet |
+| Endpoint                        | Controller         | Status       |
+|---------------------------------|--------------------|--------------|
+| `GET /api/accounts`             | AccountController  | Implemented  |
+| `GET /api/accounts/{id}`        | AccountController  | Implemented  |
+| `GET /api/profiles`             | ProfileController  | Implemented  |
+| `GET /api/profiles/{id}`        | ProfileController  | Implemented  |
+| `POST /api/profiles`            | ProfileController  | Implemented  |
+| `POST /api/profiles/{id}/accounts` | ProfileController | Implemented |
+
+Note: `POST /api/accounts` does not exist. Accounts are created under a profile via `POST /api/profiles/{id}/accounts`.
 
 ### Error handling
 
@@ -52,5 +56,4 @@ Card has no `@PrePersist` timestamp — unlike Profile/Account which set `create
 - **JPA:** `ddl-auto=update` — schema auto-managed, no migration scripts
 - **MySQL:** `jdbc:mysql://localhost:3306/bank-ledger`
 - **Eureka:** `http://localhost:8761/eureka/`
-- **ProfileService** is a stub (empty class)
 - No static analysis, linting, or formatting tools configured
