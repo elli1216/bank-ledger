@@ -1,6 +1,8 @@
 package com.accenture.accountmanagement.service;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,7 +39,17 @@ public class CardService {
     public Card createCard(Card card) {
         logger.info("Creating card: {}", card);
         card.setCardNumber(generateValidCardNumber(card.getCardType()));
+        card.setCvv(generateCvv());
+        card.setExpiryDate(generateExpiryDate());
         return cardRepository.save(card);
+    }
+
+    private String generateCvv() {
+        return String.format("%03d", random.nextInt(1000));
+    }
+
+    private LocalDate generateExpiryDate() {
+        return YearMonth.now().plusYears(6).atEndOfMonth();
     }
 
     public Card updateCard(Long id, Card updatedCard) {

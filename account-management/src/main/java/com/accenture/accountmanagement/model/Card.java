@@ -31,12 +31,10 @@ public class Card {
     @Size(min = 16, max = 16, message = "Card number length is invalid, must be 16 numbers.")
     private String cardNumber;
 
-    @Column(nullable = false)
-    @NotNull(message = "CVV is required.")
+    @Column(nullable = false, length = 3)
     private String cvv;
 
     @Column(nullable = false)
-    @NotNull(message = "Expiry is required.")
     private LocalDate expiryDate;
 
     @Column(nullable = false, length = 12)
