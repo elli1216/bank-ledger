@@ -122,4 +122,11 @@ public class Card {
         this.pin = pin;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 }

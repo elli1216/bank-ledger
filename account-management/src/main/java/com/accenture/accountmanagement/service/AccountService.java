@@ -9,16 +9,19 @@ import org.springframework.stereotype.Service;
 
 import com.accenture.accountmanagement.enums.AccountType;
 import com.accenture.accountmanagement.model.Account;
+import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.repository.AccountRepository;
 
 @Service
 public class AccountService {
+    private final CardService cardService;
     private final Logger logger = LoggerFactory.getLogger(AccountService.class);
     private final AccountRepository accountRepository;
     private final SecureRandom random = new SecureRandom();
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, CardService cardService) {
         this.accountRepository = accountRepository;
+        this.cardService = cardService;
     }
 
     public List<Account> getAllAccounts() {
@@ -72,5 +75,14 @@ public class AccountService {
         } while (exists);
 
         return accountNumber;
+    }
+
+    public Card createCardForAccount(Long id, Card card) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> {
+            logger.warn("Account id not found: {}", id);
+            return new RuntimeException("Account id not found: " + id);
+        });
+        card.setAccount(account);
+        return cardService.createCard(card);
     }
 }
