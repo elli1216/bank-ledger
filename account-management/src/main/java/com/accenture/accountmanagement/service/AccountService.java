@@ -26,6 +26,11 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
+    public List<Account> getAccountsByProfileId(Long profileId) {
+        logger.info("Fetching accounts for profile id: {}", profileId);
+        return accountRepository.findByProfileId(profileId);
+    }
+
     public Account getAccountById(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> {

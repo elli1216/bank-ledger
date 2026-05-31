@@ -58,6 +58,14 @@ public class ProfileService {
         profileRepository.deleteById(id);
     }
 
+    public List<Account> getAccountsByProfileId(Long profileId) {
+        profileRepository.findById(profileId).orElseThrow(() -> {
+            logger.warn("Profile id not found: {}", profileId);
+            return new RuntimeException("Profile id not found: " + profileId);
+        });
+        return accountService.getAccountsByProfileId(profileId);
+    }
+
     public Account createAccountForProfile(Long profileId, Account account) {
         Profile profile = profileRepository.findById(profileId).orElseThrow(() -> {
             logger.warn("Profile id not found: {}", profileId);

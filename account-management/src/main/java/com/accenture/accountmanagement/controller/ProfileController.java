@@ -56,6 +56,11 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/accounts")
+    public List<Account> getAccountsByProfileId(@PathVariable Long id) {
+        return profileService.getAccountsByProfileId(id);
+    }
+
     @PostMapping("/{id}/accounts")
     public ResponseEntity<Account> createAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
         Account created = profileService.createAccountForProfile(id, account);
