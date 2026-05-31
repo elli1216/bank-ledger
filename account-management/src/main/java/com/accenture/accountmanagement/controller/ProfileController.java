@@ -46,7 +46,7 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}")
-    public Profile updateProfile(@PathVariable Long id, @RequestBody Profile updatedProfile) {
+    public Profile updateProfile(@PathVariable Long id, @Valid @RequestBody Profile updatedProfile) {
         return profileService.updateProfile(id, updatedProfile);
     }
 

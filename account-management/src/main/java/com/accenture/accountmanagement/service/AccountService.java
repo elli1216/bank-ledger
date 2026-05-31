@@ -40,6 +40,21 @@ public class AccountService {
         return saved;
     }
 
+    public Account updateAccount(Long id, Account updatedAccount) {
+        Account existing = getAccountById(id);
+        existing.setAccountStatus(updatedAccount.getAccountStatus());
+        existing.setAccountType(updatedAccount.getAccountType());
+        existing.setBalance(updatedAccount.getBalance());
+        existing.setCurrency(updatedAccount.getCurrency());
+        existing.setProfile(updatedAccount.getProfile());
+        Account saved = accountRepository.save(existing);
+        return saved;
+    }
+
+    public void deleteAccount(Long id) {
+        accountRepository.deleteById(id);
+    }
+
     public String generateUniqueAccountNumber(AccountType accountType) {
         String prefix = (accountType == AccountType.CHECKING) ? "100" : "200";
         String accountNumber;
