@@ -50,21 +50,19 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping("/deposit/{accountId}")
-    public ResponseEntity<TransactionResponse> deposit(@PathVariable Long accountId,
-            @Valid @RequestBody DepositRequest request) {
-        request.setDescription(request.getAmount() + " have been deposited.");
-        TransactionResponse result = transactionService.deposit(accountId, request.getAmount(),
-                request.getDescription());
+    @PostMapping("/deposit")
+    public ResponseEntity<TransactionResponse> deposit(@Valid @RequestBody DepositRequest request) {
+        request.setDescription("Amount of " + request.getAmount() + " have been deposited.");
+        TransactionResponse result = transactionService.deposit(
+                request.getCardNumber(), request.getAmount(), request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping("/withdraw/{accountId}")
-    public ResponseEntity<TransactionResponse> withdraw(@PathVariable Long accountId,
-            @Valid @RequestBody WithdrawRequest request) {
-        request.setDescription(request.getAmount() + " have been withdrawn.");
-        TransactionResponse result = transactionService.withdraw(accountId, request.getAmount(),
-                request.getDescription());
+    @PostMapping("/withdraw")
+    public ResponseEntity<TransactionResponse> withdraw(@Valid @RequestBody WithdrawRequest request) {
+        request.setDescription("Amount of " + request.getAmount() + " have been withdrawn.");
+        TransactionResponse result = transactionService.withdraw(
+                request.getCardNumber(), request.getAmount(), request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }

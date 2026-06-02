@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.accenture.transactionledger.dto.AccountResponse;
 import com.accenture.transactionledger.dto.BalanceUpdateRequest;
+import com.accenture.transactionledger.dto.CardResponse;
 
 @FeignClient(name = "account-management")
 public interface AccountServiceClient {
@@ -16,4 +17,7 @@ public interface AccountServiceClient {
 
     @PostMapping("/api/accounts/{id}/transactions")
     AccountResponse applyTransaction(@PathVariable("id") Long id, @RequestBody BalanceUpdateRequest request);
+
+    @GetMapping("/api/cards/by-number/{cardNumber}")
+    CardResponse getCardByNumber(@PathVariable("cardNumber") String cardNumber);
 }

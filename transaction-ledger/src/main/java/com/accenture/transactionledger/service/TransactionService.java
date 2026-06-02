@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.accenture.transactionledger.dto.BalanceUpdateRequest;
+import com.accenture.transactionledger.dto.CardResponse;
 import com.accenture.transactionledger.dto.TransactionResponse;
 import com.accenture.transactionledger.dto.TransferRequest;
 import com.accenture.transactionledger.enums.TransactionStatus;
@@ -98,9 +99,13 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionResponse deposit(Long accountId, BigDecimal amount, String description) {
+    public TransactionResponse deposit(String cardNumber, BigDecimal amount, String description) {
+        CardResponse card = accountServiceClient.getCardByNumber(cardNumber);
+        Long accountId = card.getAccountId();
+
         String reference = generateTransactionReference();
-        logger.info("Initiating deposit {}: account {} amount: {}", reference, accountId, amount);
+        logger.info("Initiating deposit {}: card {} -> account {}, amount: {}",
+                reference, cardNumber, accountId, amount);
 
         TransactionLog log = new TransactionLog();
         log.setTransactionReference(reference);
@@ -123,9 +128,13 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionResponse withdraw(Long accountId, BigDecimal amount, String description) {
+    public TransactionResponse withdraw(String cardNumber, BigDecimal amount, String description) {
+        CardResponse card = accountServiceClient.getCardByNumber(cardNumber);
+        Long accountId = card.getAccountId();
+
         String reference = generateTransactionReference();
-        logger.info("Initiating withdrawal {}: account {} amount: {}", reference, accountId, amount);
+        logger.info("Initiating withdrawal {}: card {} -> account {}, amount: {}",
+                reference, cardNumber, accountId, amount);
 
         TransactionLog log = new TransactionLog();
         log.setTransactionReference(reference);
