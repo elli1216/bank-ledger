@@ -19,7 +19,6 @@ import jakarta.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "cards")
@@ -29,7 +28,6 @@ public class Card {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 16)
-    @Size(min = 16, max = 16, message = "Card number length is invalid, must be 16 numbers.")
     private String cardNumber;
 
     @Column(nullable = false, length = 3)
