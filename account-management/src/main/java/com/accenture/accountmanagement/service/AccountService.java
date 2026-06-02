@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.accenture.accountmanagement.dto.AccountRequest;
+import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.enums.AccountType;
 import com.accenture.accountmanagement.exception.InsufficientBalanceException;
 import com.accenture.accountmanagement.model.Account;
@@ -28,39 +30,54 @@ public class AccountService {
         this.cardService = cardService;
     }
 
-    public List<Account> getAllAccounts() {
+    public List<AccountResponse> getAllAccounts() {
         logger.info("Fetching all accounts.");
-        return accountRepository.findAll();
+        return accountRepository.findAll().stream()
+                .map(AccountResponse::fromEntity)
+                .toList();
     }
 
-    public List<Account> getAccountsByProfileId(Long profileId) {
+    public List<AccountResponse> getAccountsByProfileId(Long profileId) {
         logger.info("Fetching accounts for profile id: {}", profileId);
-        return accountRepository.findByProfileId(profileId);
+        return accountRepository.findByProfileId(profileId).stream()
+                .map(AccountResponse::fromEntity)
+                .toList();
     }
 
-    public Account getAccountById(Long id) {
-        return accountRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.warn("Account Id not found: {}", id);
-                    return new RuntimeException("Account not found: " + id);
-                });
+    public AccountResponse getAccountById(Long id) {
+        return AccountResponse.fromEntity(findEntityById(id));
     }
 
-    public Account createAccount(Account account) {
+    private Account findEntityById(Long id) {
+        return accountRepository.findById(id).orElseThrow(() -> {
+            logger.warn("Account Id not found: {}", id);
+            return new RuntimeException("Account not found: " + id);
+        });
+    }
+
+    public AccountResponse createAccount(AccountRequest request) {
+        Account account = new Account();
+        account.setAccountType(request.getAccountType());
+        account.setBalance(request.getBalance());
+        account.setAccountStatus(request.getAccountStatus());
+        account.setCurrency(request.getCurrency());
+        return createAccount(account);
+    }
+
+    public AccountResponse createAccount(Account account) {
         account.setAccountNumber(generateUniqueAccountNumber(account.getAccountType()));
         Account saved = accountRepository.save(account);
-        return saved;
+        return AccountResponse.fromEntity(saved);
     }
 
-    public Account updateAccount(Long id, Account updatedAccount) {
-        Account existing = getAccountById(id);
-        existing.setAccountStatus(updatedAccount.getAccountStatus());
-        existing.setAccountType(updatedAccount.getAccountType());
-        existing.setBalance(updatedAccount.getBalance());
-        existing.setCurrency(updatedAccount.getCurrency());
-        existing.setProfile(updatedAccount.getProfile());
+    public AccountResponse updateAccount(Long id, AccountRequest request) {
+        Account existing = findEntityById(id);
+        existing.setAccountStatus(request.getAccountStatus());
+        existing.setAccountType(request.getAccountType());
+        existing.setBalance(request.getBalance());
+        existing.setCurrency(request.getCurrency());
         Account saved = accountRepository.save(existing);
-        return saved;
+        return AccountResponse.fromEntity(saved);
     }
 
     public void deleteAccount(Long id) {
@@ -91,13 +108,10 @@ public class AccountService {
     }
 
     @Transactional
-    public Account applyTransaction(Long id, BigDecimal amount) {
+    public AccountResponse applyTransaction(Long id, BigDecimal amount) {
+        findEntityById(id);
         int updated = accountRepository.updateBalance(id, amount);
         if (updated == 0) {
-            Account account = getAccountById(id);
-            if (account == null) {
-                throw new RuntimeException("Account not found: " + id);
-            }
             throw new InsufficientBalanceException("Insufficient balance for account " + id);
         }
         return getAccountById(id);

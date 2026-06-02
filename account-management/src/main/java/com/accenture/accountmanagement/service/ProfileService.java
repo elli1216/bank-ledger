@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.accenture.accountmanagement.dto.AccountRequest;
+import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Profile;
 import com.accenture.accountmanagement.repository.ProfileRepository;
@@ -58,7 +60,7 @@ public class ProfileService {
         profileRepository.deleteById(id);
     }
 
-    public List<Account> getAccountsByProfileId(Long profileId) {
+    public List<AccountResponse> getAccountsByProfileId(Long profileId) {
         profileRepository.findById(profileId).orElseThrow(() -> {
             logger.warn("Profile id not found: {}", profileId);
             return new RuntimeException("Profile id not found: " + profileId);
@@ -66,11 +68,16 @@ public class ProfileService {
         return accountService.getAccountsByProfileId(profileId);
     }
 
-    public Account createAccountForProfile(Long profileId, Account account) {
+    public AccountResponse createAccountForProfile(Long profileId, AccountRequest request) {
         Profile profile = profileRepository.findById(profileId).orElseThrow(() -> {
             logger.warn("Profile id not found: {}", profileId);
             return new RuntimeException("Profile id not found: " + profileId);
         });
+        Account account = new Account();
+        account.setAccountType(request.getAccountType());
+        account.setBalance(request.getBalance());
+        account.setAccountStatus(request.getAccountStatus());
+        account.setCurrency(request.getCurrency());
         account.setProfile(profile);
         return accountService.createAccount(account);
     }

@@ -5,7 +5,8 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.accenture.accountmanagement.model.Account;
+import com.accenture.accountmanagement.dto.AccountRequest;
+import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.model.Profile;
 import com.accenture.accountmanagement.service.ProfileService;
 
@@ -57,13 +58,14 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}/accounts")
-    public List<Account> getAccountsByProfileId(@PathVariable Long id) {
+    public List<AccountResponse> getAccountsByProfileId(@PathVariable Long id) {
         return profileService.getAccountsByProfileId(id);
     }
 
     @PostMapping("/{id}/accounts")
-    public ResponseEntity<Account> createAccount(@PathVariable Long id, @Valid @RequestBody Account account) {
-        Account created = profileService.createAccountForProfile(id, account);
+    public ResponseEntity<AccountResponse> createAccount(@PathVariable Long id,
+            @Valid @RequestBody AccountRequest account) {
+        AccountResponse created = profileService.createAccountForProfile(id, account);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

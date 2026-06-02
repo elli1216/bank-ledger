@@ -3,8 +3,9 @@ package com.accenture.accountmanagement.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.accenture.accountmanagement.dto.AccountRequest;
+import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.dto.BalanceUpdateRequest;
-import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.service.AccountService;
 
@@ -31,22 +32,22 @@ public class AccountController {
     }
 
     @GetMapping
-    public List<Account> getAllAccounts() {
+    public List<AccountResponse> getAllAccounts() {
         return accountService.getAllAccounts();
     }
 
     @GetMapping("/{id}")
-    public Account getAccountById(@PathVariable Long id) {
+    public AccountResponse getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id);
     }
 
     @PutMapping("/{id}")
-    public Account updateAccount(@PathVariable Long id, @RequestBody Account updatedAccount) {
+    public AccountResponse updateAccount(@PathVariable Long id, @RequestBody AccountRequest updatedAccount) {
         return accountService.updateAccount(id, updatedAccount);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Account> deleteAccount(Long id) {
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
@@ -58,9 +59,9 @@ public class AccountController {
     }
 
     @PostMapping("/{id}/transactions")
-    public ResponseEntity<Account> applyTransaction(@PathVariable Long id,
+    public ResponseEntity<AccountResponse> applyTransaction(@PathVariable Long id,
             @Valid @RequestBody BalanceUpdateRequest request) {
-        Account account = accountService.applyTransaction(id, request.getAmount());
+        AccountResponse account = accountService.applyTransaction(id, request.getAmount());
         return ResponseEntity.ok(account);
     }
 
