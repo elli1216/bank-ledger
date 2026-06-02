@@ -3,6 +3,7 @@ package com.accenture.accountmanagement.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.accenture.accountmanagement.dto.BalanceUpdateRequest;
 import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.service.AccountService;
@@ -55,4 +56,12 @@ public class AccountController {
         Card saved = accountService.createCardForAccount(id, updatedCard);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
+    @PostMapping("/{id}/transactions")
+    public ResponseEntity<Account> applyTransaction(@PathVariable Long id,
+            @Valid @RequestBody BalanceUpdateRequest request) {
+        Account account = accountService.applyTransaction(id, request.getAmount());
+        return ResponseEntity.ok(account);
+    }
+
 }

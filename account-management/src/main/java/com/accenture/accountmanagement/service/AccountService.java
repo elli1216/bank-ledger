@@ -1,5 +1,6 @@
 package com.accenture.accountmanagement.service;
 
+import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.List;
 
@@ -8,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.accenture.accountmanagement.enums.AccountType;
+import com.accenture.accountmanagement.exception.InsufficientBalanceException;
 import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.repository.AccountRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class AccountService {
@@ -84,5 +88,18 @@ public class AccountService {
         });
         card.setAccount(account);
         return cardService.createCard(card);
+    }
+
+    @Transactional
+    public Account applyTransaction(Long id, BigDecimal amount) {
+        int updated = accountRepository.updateBalance(id, amount);
+        if (updated == 0) {
+            Account account = getAccountById(id);
+            if (account == null) {
+                throw new RuntimeException("Account not found: " + id);
+            }
+            throw new InsufficientBalanceException("Insufficient balance for account " + id);
+        }
+        return getAccountById(id);
     }
 }
