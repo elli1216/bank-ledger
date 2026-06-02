@@ -7,6 +7,7 @@ import com.accenture.accountmanagement.dto.AccountRequest;
 import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.dto.BalanceUpdateRequest;
 import com.accenture.accountmanagement.dto.CardResponse;
+import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.service.AccountService;
 
@@ -38,7 +39,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public AccountResponse getAccountById(@PathVariable Long id) {
+    public Account getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id);
     }
 
@@ -65,9 +66,9 @@ public class AccountController {
     }
 
     @PostMapping("/{id}/transactions")
-    public ResponseEntity<AccountResponse> applyTransaction(@PathVariable Long id,
+    public ResponseEntity<Account> applyTransaction(@PathVariable Long id,
             @Valid @RequestBody BalanceUpdateRequest request) {
-        AccountResponse account = accountService.applyTransaction(id, request.getAmount());
+        Account account = accountService.applyTransaction(id, request.getAmount());
         return ResponseEntity.ok(account);
     }
 

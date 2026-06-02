@@ -25,7 +25,7 @@ public class CardController {
     }
 
     @GetMapping
-    public List<Card> getAllCards() {
+    public List<CardResponse> getAllCards() {
         return cardService.getAllCards();
     }
 

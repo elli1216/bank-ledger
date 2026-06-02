@@ -10,6 +10,7 @@ import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.dto.ProfileRequest;
 import com.accenture.accountmanagement.dto.ProfileResponse;
+import com.accenture.accountmanagement.model.Profile;
 import com.accenture.accountmanagement.service.ProfileService;
 
 import jakarta.validation.Valid;
@@ -38,7 +39,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}")
-    public ProfileResponse getProfileById(@PathVariable Long id) {
+    public Profile getProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
     }
 

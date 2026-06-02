@@ -37,8 +37,12 @@ public class ProfileService {
                 .toList();
     }
 
-    public ProfileResponse getProfileById(Long id) {
-        return ProfileResponse.fromEntity(findEntityById(id));
+    public Profile getProfileById(Long id) {
+        return profileRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Profile id not found: ", id);
+                    return new RuntimeException("Profile id not found: " + id);
+                });
     }
 
     private Profile findEntityById(Long id) {

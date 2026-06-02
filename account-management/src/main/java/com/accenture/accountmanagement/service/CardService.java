@@ -24,9 +24,12 @@ public class CardService {
         this.cardRepository = cardRepository;
     }
 
-    public List<Card> getAllCards() {
+    public List<CardResponse> getAllCards() {
         logger.info("Fetching all cards.");
-        return cardRepository.findAll();
+        return cardRepository.findAll()
+                .stream()
+                .map(CardResponse::fromEntity)
+                .toList();
     }
 
     public Card getCardById(Long id) {

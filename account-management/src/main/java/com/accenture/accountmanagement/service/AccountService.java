@@ -49,8 +49,11 @@ public class AccountService {
                 .toList();
     }
 
-    public AccountResponse getAccountById(Long id) {
-        return AccountResponse.fromEntity(findEntityById(id));
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id).orElseThrow(() -> {
+            logger.warn("Account id not found: ", id);
+            return new RuntimeException("Account id not found: " + id);
+        });
     }
 
     private Account findEntityById(Long id) {
@@ -120,7 +123,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponse applyTransaction(Long id, BigDecimal amount) {
+    public Account applyTransaction(Long id, BigDecimal amount) {
         findEntityById(id);
         int updated = accountRepository.updateBalance(id, amount);
         if (updated == 0) {
