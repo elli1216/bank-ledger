@@ -8,20 +8,25 @@ import org.springframework.stereotype.Service;
 
 import com.accenture.accountmanagement.dto.AccountRequest;
 import com.accenture.accountmanagement.dto.AccountResponse;
+import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.dto.ProfileRequest;
 import com.accenture.accountmanagement.dto.ProfileResponse;
 import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Profile;
+import com.accenture.accountmanagement.repository.CardRepository;
 import com.accenture.accountmanagement.repository.ProfileRepository;
 
 @Service
 public class ProfileService {
     private final Logger logger = LoggerFactory.getLogger(AccountService.class);
     private final ProfileRepository profileRepository;
+    private final CardRepository cardRepository;
     private final AccountService accountService;
 
-    public ProfileService(ProfileRepository profileRepository, AccountService accountService) {
+    public ProfileService(ProfileRepository profileRepository, CardRepository cardRepository,
+            AccountService accountService) {
         this.profileRepository = profileRepository;
+        this.cardRepository = cardRepository;
         this.accountService = accountService;
     }
 
@@ -77,6 +82,13 @@ public class ProfileService {
     public List<AccountResponse> getAccountsByProfileId(Long profileId) {
         findEntityById(profileId);
         return accountService.getAccountsByProfileId(profileId);
+    }
+
+    public List<CardResponse> getCardsByProfileId(Long profileId) {
+        findEntityById(profileId);
+        return cardRepository.findByProfileId(profileId).stream()
+                .map(CardResponse::fromEntity)
+                .toList();
     }
 
     public AccountResponse createAccountForProfile(Long profileId, AccountRequest request) {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.accenture.accountmanagement.dto.AccountRequest;
 import com.accenture.accountmanagement.dto.AccountResponse;
+import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.dto.ProfileRequest;
 import com.accenture.accountmanagement.dto.ProfileResponse;
 import com.accenture.accountmanagement.service.ProfileService;
@@ -61,6 +62,11 @@ public class ProfileController {
     @GetMapping("/{id}/accounts")
     public List<AccountResponse> getAccountsByProfileId(@PathVariable Long id) {
         return profileService.getAccountsByProfileId(id);
+    }
+
+    @GetMapping("/{id}/cards")
+    public List<CardResponse> getCardsByProfileId(@PathVariable Long id) {
+        return profileService.getCardsByProfileId(id);
     }
 
     @PostMapping("/{id}/accounts")
