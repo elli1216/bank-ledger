@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.accenture.accountmanagement.dto.AccountRequest;
 import com.accenture.accountmanagement.dto.AccountResponse;
+import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.enums.AccountType;
 import com.accenture.accountmanagement.exception.InsufficientBalanceException;
 import com.accenture.accountmanagement.model.Account;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.repository.AccountRepository;
+import com.accenture.accountmanagement.repository.CardRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -23,10 +25,13 @@ public class AccountService {
     private final CardService cardService;
     private final Logger logger = LoggerFactory.getLogger(AccountService.class);
     private final AccountRepository accountRepository;
+    private final CardRepository cardRepository;
     private final SecureRandom random = new SecureRandom();
 
-    public AccountService(AccountRepository accountRepository, CardService cardService) {
+    public AccountService(AccountRepository accountRepository, CardRepository cardRepository,
+            CardService cardService) {
         this.accountRepository = accountRepository;
+        this.cardRepository = cardRepository;
         this.cardService = cardService;
     }
 
@@ -105,6 +110,13 @@ public class AccountService {
         });
         card.setAccount(account);
         return cardService.createCard(card);
+    }
+
+    public List<CardResponse> getCardsByAccountId(Long accountId) {
+        findEntityById(accountId);
+        return cardRepository.findByAccountId(accountId).stream()
+                .map(CardResponse::fromEntity)
+                .toList();
     }
 
     @Transactional

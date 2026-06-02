@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.accenture.accountmanagement.dto.AccountRequest;
 import com.accenture.accountmanagement.dto.AccountResponse;
 import com.accenture.accountmanagement.dto.BalanceUpdateRequest;
+import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.service.AccountService;
 
@@ -52,9 +53,14 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/cards")
+    public List<CardResponse> getCardsByAccountId(@PathVariable Long id) {
+        return accountService.getCardsByAccountId(id);
+    }
+
     @PostMapping("/{id}/cards")
-    public ResponseEntity<Card> createCardForAccount(@PathVariable Long id, @Valid @RequestBody Card updatedCard) {
-        Card saved = accountService.createCardForAccount(id, updatedCard);
+    public ResponseEntity<Card> createCardForAccount(@PathVariable Long id, @Valid @RequestBody Card card) {
+        Card saved = accountService.createCardForAccount(id, card);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
