@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.enums.CardType;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.repository.CardRepository;
@@ -64,6 +65,16 @@ public class CardService {
     public void deleteCard(Long id) {
         logger.info("Delete card: {}", id);
         cardRepository.deleteById(id);
+    }
+
+    public CardResponse getCardByCardNumber(String cardNumber) {
+        Card card = cardRepository.findByCardNumber(cardNumber)
+                .orElseThrow(() -> {
+                    logger.warn("Card number not found: {}", cardNumber);
+                    return new RuntimeException("Card not found: " + cardNumber);
+                });
+
+        return CardResponse.fromEntity(card);
     }
 
     public String generateValidCardNumber(CardType cardType) {

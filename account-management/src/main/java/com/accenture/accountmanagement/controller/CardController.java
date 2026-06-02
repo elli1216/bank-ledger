@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.accenture.accountmanagement.dto.CardResponse;
 import com.accenture.accountmanagement.model.Card;
 import com.accenture.accountmanagement.service.CardService;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/cards")
@@ -31,6 +33,11 @@ public class CardController {
     @GetMapping("/{id}")
     public Card getCardById(@PathVariable Long id) {
         return cardService.getCardById(id);
+    }
+
+    @GetMapping("/by-number/{cardNumber}")
+    public CardResponse getByCardNumber(@PathVariable String cardNumber) {
+        return cardService.getCardByCardNumber(cardNumber);
     }
 
     @PutMapping("/{id}")

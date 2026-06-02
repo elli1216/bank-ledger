@@ -1,6 +1,7 @@
 package com.accenture.accountmanagement.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT c FROM Card c JOIN FETCH c.account WHERE c.account.id = :accountId")
     List<Card> findByAccountId(@Param("accountId") Long accountId);
+
+    Optional<Card> findByCardNumber(String cardNumber);
 }
