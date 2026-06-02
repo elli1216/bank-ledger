@@ -1,6 +1,7 @@
 package com.accenture.accountmanagement.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.accenture.accountmanagement.enums.CardStatus;
 import com.accenture.accountmanagement.enums.CardType;
@@ -15,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -48,6 +50,14 @@ public class Card {
 
     @Column(nullable = true)
     private String pin;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
@@ -126,5 +136,9 @@ public class Card {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

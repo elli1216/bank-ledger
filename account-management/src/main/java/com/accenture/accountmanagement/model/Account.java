@@ -57,7 +57,7 @@ public class Account {
     @NotBlank(message = "Currency is required.")
     private String currency;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
