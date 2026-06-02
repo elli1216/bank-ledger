@@ -153,7 +153,7 @@ public class TransactionService {
             if (e instanceof InsufficientBalanceException) {
                 throw e;
             }
-            throw new RuntimeException("Withdrawal failed: " + e.getMessage());
+            throw new InsufficientBalanceException("Withdrawal failed: " + e.getMessage());
         }
 
         TransactionLog saved = transactionLogRepository.save(log);
