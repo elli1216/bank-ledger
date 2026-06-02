@@ -3,8 +3,10 @@ package com.accenture.transactionledger.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.accenture.transactionledger.dto.DepositRequest;
 import com.accenture.transactionledger.dto.TransactionResponse;
 import com.accenture.transactionledger.dto.TransferRequest;
+import com.accenture.transactionledger.dto.WithdrawRequest;
 import com.accenture.transactionledger.service.TransactionService;
 
 import jakarta.validation.Valid;
@@ -50,7 +52,8 @@ public class TransactionController {
 
     @PostMapping("/deposit/{accountId}")
     public ResponseEntity<TransactionResponse> deposit(@PathVariable Long accountId,
-            @Valid @RequestBody TransferRequest request) {
+            @Valid @RequestBody DepositRequest request) {
+        request.setDescription(request.getAmount() + " have been deposited.");
         TransactionResponse result = transactionService.deposit(accountId, request.getAmount(),
                 request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -58,7 +61,8 @@ public class TransactionController {
 
     @PostMapping("/withdraw/{accountId}")
     public ResponseEntity<TransactionResponse> withdraw(@PathVariable Long accountId,
-            @Valid @RequestBody TransferRequest request) {
+            @Valid @RequestBody WithdrawRequest request) {
+        request.setDescription(request.getAmount() + " have been withdrawn.");
         TransactionResponse result = transactionService.withdraw(accountId, request.getAmount(),
                 request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
