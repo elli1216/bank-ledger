@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.accenture.accountmanagement.dto.AccountRequest;
 import com.accenture.accountmanagement.dto.AccountResponse;
-import com.accenture.accountmanagement.model.Profile;
+import com.accenture.accountmanagement.dto.ProfileRequest;
+import com.accenture.accountmanagement.dto.ProfileResponse;
 import com.accenture.accountmanagement.service.ProfileService;
 
 import jakarta.validation.Valid;
@@ -31,24 +32,24 @@ public class ProfileController {
     }
 
     @GetMapping()
-    public List<Profile> getAllProfiles() {
+    public List<ProfileResponse> getAllProfiles() {
         return profileService.getAllProfiles();
     }
 
     @GetMapping("/{id}")
-    public Profile getProfileById(@PathVariable Long id) {
+    public ProfileResponse getProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Profile> createProfile(@Valid @RequestBody Profile profile) {
-        Profile saved = profileService.createProfile(profile);
+    public ResponseEntity<ProfileResponse> createProfile(@Valid @RequestBody ProfileRequest request) {
+        ProfileResponse saved = profileService.createProfile(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
-    public Profile updateProfile(@PathVariable Long id, @Valid @RequestBody Profile updatedProfile) {
-        return profileService.updateProfile(id, updatedProfile);
+    public ProfileResponse updateProfile(@PathVariable Long id, @Valid @RequestBody ProfileRequest request) {
+        return profileService.updateProfile(id, request);
     }
 
     @DeleteMapping("/{id}")
